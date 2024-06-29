@@ -13,6 +13,7 @@ export class PicturifyService {
     apiKey: process.env.OPENAI_API_KEY,
   });
   constructor(private readonly prismaService: PrismaService) {}
+
   async generateImage(imageGenerationDto: ImageGenerationDto, user: User) {
     const prismatsx = await this.prismaService.$transaction(
       async (tx) => {

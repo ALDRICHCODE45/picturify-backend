@@ -26,4 +26,10 @@ export class AuthController {
   register(@Body() user: RegisterUserDto) {
     return this.authService.register(user);
   }
+
+  @Get('renew-token')
+  @UseGuards(AuthGuard())
+  async renewToken(@GetUser() user: User) {
+    return this.authService.renewToken(user);
+  }
 }

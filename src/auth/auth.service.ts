@@ -11,6 +11,7 @@ import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { jwtPayload } from './interfaces/jwtPayload.interface';
 import { EmailService } from 'src/email/email.service';
+import { User } from '@prisma/client';
 
 @Injectable()
 export class AuthService {
@@ -70,9 +71,18 @@ export class AuthService {
       this.handleErrror(e);
     }
   }
+
   private getJwtToken(payload: jwtPayload) {
     const token = this.jwtService.sign(payload);
     return token;
+  }
+
+  async renewToken(user: User) {
+    const jwt = this.getJwtToken({ id: user.id });
+    return {
+      ok: true,
+      jwt,
+    };
   }
 
   private handleErrror(e: any) {

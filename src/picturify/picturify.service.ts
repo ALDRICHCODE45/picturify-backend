@@ -22,7 +22,6 @@ export class PicturifyService {
             isPicturify: false,
             text: imageGenerationDto.prompt,
             userId: user.id,
-            createdAt: new Date(),
           },
         });
 

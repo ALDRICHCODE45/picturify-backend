@@ -126,6 +126,11 @@ export class PicturifyService {
 
       if (currentTranslationQuantity.translate_quantity >= 5) {
         // Crear el mensaje de límite alcanzado
+        await this.emailService.sendMotivationEmail({
+          subject: 'actualizar plan',
+          to: user.email,
+        });
+
         await tx.message.create({
           data: {
             isPicturify: true,

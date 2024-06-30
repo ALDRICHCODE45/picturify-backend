@@ -64,10 +64,10 @@ export const PlanEndedEmail = (link: string): string => {
 <body>
     <div class="container">
         <h1>Tu Plan Gratuito ha Terminado</h1>
-        <p>Hola,<br><br>Queríamos informarte que tu plan gratuito en Picturify ha llegado a su fin. ¡Pero no te preocupes! Aún puedes seguir disfrutando de todas las increíbles funcionalidades de nuestra plataforma actualizando tu suscripción.</p>
+        <p>Hola,<br><br>Queremos informarte que tu plan gratuito en Picturify ha llegado a su fin. ¡Pero no te preocupes! Aún puedes seguir disfrutando de todas las increíbles funcionalidades de nuestra plataforma actualizando tu suscripción.</p>
         <div class="grid">
-            <img src="https://images.unsplash.com/photo-1527777195299-6f000ce2105b?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Upgrade Image 1">
-            <img src="https://images.unsplash.com/photo-1558381995-9c9305f8d08b?q=80&w=1919&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Upgrade Image 2">
+            <img src="https://images.unsplash.com/photo-1519501025264-65ba15a82390?q=80&w=1964&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Upgrade Image 1">
+            <img src="https://images.unsplash.com/photo-1514924013411-cbf25faa35bb?q=80&w=1980&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Upgrade Image 2">
         </div>
         <a class="button" href="${link}"><p>Actualizar Suscripción</p></a>
     </div>

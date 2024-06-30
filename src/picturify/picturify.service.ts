@@ -6,13 +6,17 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { User } from '@prisma/client';
 import { TranslateDto } from './dtos/translate.dto';
 import { translateUseCase } from './use-cases/translateUseCase.use-case';
+import { EmailService } from 'src/email/email.service';
 
 @Injectable()
 export class PicturifyService {
   private readonly openai: OpenAI = new OpenAI({
     apiKey: process.env.OPENAI_API_KEY,
   });
-  constructor(private readonly prismaService: PrismaService) {}
+  constructor(
+    private readonly prismaService: PrismaService,
+    private readonly emailService: EmailService,
+  ) {}
 
   async generateImage(imageGenerationDto: ImageGenerationDto, user: User) {
     const prismatsx = await this.prismaService.$transaction(
@@ -38,6 +42,10 @@ export class PicturifyService {
 
         if (currentImageQuantity.image_quantity >= 2) {
           // Crear el mensaje de límite alcanzado
+          await this.emailService.sendMotivationEmail({
+            subject: 'actualizar plan',
+            to: user.email,
+          });
           await tx.message.create({
             data: {
               isPicturify: true,

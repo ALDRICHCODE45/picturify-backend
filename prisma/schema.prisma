@@ -21,23 +21,25 @@ enum Subscription_type {
 }
 
 model User {
-  id              String            @id @default(uuid())
-  email           String            @unique
-  username        String            @unique
-  password        String
-  subscription    Subscription_type @default(GRATIS)
-  isActive        Boolean           @default(true)
-  image_quantity  Int               @default(0)
-  email_validated Boolean           @default(false)
-  messages        Message[]
+  id                 String            @id @default(uuid())
+  email              String            @unique
+  username           String            @unique
+  password           String
+  subscription       Subscription_type @default(GRATIS)
+  isActive           Boolean           @default(true)
+  image_quantity     Int               @default(0)
+  email_validated    Boolean           @default(false)
+  messages           Message[]
+  translate_quantity Int               @default(0)
 }
 
 model Message {
-  id          String   @id @default(uuid())
-  Image       String?
-  text        String?
-  isPicturify Boolean  @default(true)
-  user        User     @relation(fields: [userId], references: [id])
-  userId      String
-  createdAt   DateTime @default(now())
+  id           String   @id @default(uuid())
+  Image        String?
+  text         String?
+  isPicturify  Boolean  @default(true)
+  user         User     @relation(fields: [userId], references: [id])
+  userId       String
+  createdAt    DateTime @default(now())
+  isTraduction Boolean  @default(false)
 }

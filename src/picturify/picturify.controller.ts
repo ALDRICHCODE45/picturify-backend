@@ -4,10 +4,17 @@ import { ImageGenerationDto } from './dtos/imageGeneration.dto';
 import { AuthGuard } from '@nestjs/passport';
 import { GetUser } from 'src/auth/decorators/get-user.decorator';
 import { User } from '@prisma/client';
+import { TranslateDto } from './dtos/translate.dto';
 
 @Controller('picturify')
 export class PicturifyController {
   constructor(private readonly pictufifyService: PicturifyService) {}
+
+  @Post('translate')
+  @UseGuards(AuthGuard())
+  async translate(@Body() transalteDto: TranslateDto, @GetUser() user: User) {
+    return this.pictufifyService.translate(transalteDto, user);
+  }
 
   @Post('image-generation')
   @UseGuards(AuthGuard())
@@ -21,6 +28,11 @@ export class PicturifyController {
   @Get('get-messages')
   @UseGuards(AuthGuard())
   async getAllMessagesByUsers(@GetUser() user: User) {
-    return this.pictufifyService.getMessages(user);
+    return this.pictufifyService.getImagesMessages(user);
+  }
+  @Get('get-translate-messages')
+  @UseGuards(AuthGuard())
+  async getAllTraductionMessages(@GetUser() user: User) {
+    return this.pictufifyService.getTraductionMessages(user);
   }
 }

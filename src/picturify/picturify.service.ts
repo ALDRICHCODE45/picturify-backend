@@ -1,11 +1,11 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { ImageGenerationDto } from './dtos/imageGeneration.dto';
 import OpenAI from 'openai';
 import { ImageGenerationUseCase } from './use-cases/imageGeneration.use-case';
-import * as path from 'path';
-import * as fs from 'fs';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { User } from '@prisma/client';
+import { TranslateDto } from './dtos/translate.dto';
+import { translateUseCase } from './use-cases/translateUseCase.use-case';
 
 @Injectable()
 export class PicturifyService {
@@ -94,10 +94,90 @@ export class PicturifyService {
     };
   }
 
-  async getMessages(user: User) {
+  async translate(transalteDto: TranslateDto, user: User) {
+    const prismatsx = await this.prismaService.$transaction(async (tx) => {
+      // Crear el primer mensaje
+      await tx.message.create({
+        data: {
+          isPicturify: false,
+          text: transalteDto.prompt,
+          userId: user.id,
+          isTraduction: true,
+        },
+      });
+
+      // Obtener la cantidad de  traducciones actuales
+      const currentTranslationQuantity = await tx.user.findUnique({
+        where: {
+          id: user.id,
+        },
+        select: {
+          translate_quantity: true,
+        },
+      });
+
+      if (currentTranslationQuantity.translate_quantity >= 5) {
+        // Crear el mensaje de límite alcanzado
+        await tx.message.create({
+          data: {
+            isPicturify: true,
+            text: 'haz alcanzado el limite gratuito, actualiza tu suscripcion',
+            userId: user.id,
+            isTraduction: true,
+          },
+        });
+        return {
+          ok: false,
+          msg: 'ha ocurrido un error, limite gratuito alcanzado',
+        };
+      }
+
+      // Actualizar la cantidad de traduccciones
+      await tx.user.update({
+        where: {
+          id: user.id,
+        },
+        data: {
+          translate_quantity: currentTranslationQuantity.translate_quantity + 1,
+        },
+      });
+
+      return {
+        ok: true,
+      };
+    });
+
+    if (!prismatsx.ok) {
+      return {
+        msg: 'ha ocurrido un error inesperado, consulta con el administrador',
+        ok: false,
+      };
+    }
+
+    // Generar la traduccion fuera de la transacción
+    const traslate = await translateUseCase(this.openai, transalteDto);
+
+    // Crear el mensaje final fuera de la transacción
+    await this.prismaService.message.create({
+      data: {
+        text: traslate,
+        isPicturify: true,
+        userId: user.id,
+        isTraduction: true,
+      },
+    });
+
+    return {
+      msg: 'procedimiento terminado con exito',
+      ok: true,
+    };
+  }
+
+  async getImagesMessages(user: User) {
     const messages = await this.prismaService.message.findMany({
       where: {
         userId: user.id,
+        isTraduction: false,
       },
       orderBy: {
         createdAt: 'asc',
@@ -108,14 +188,18 @@ export class PicturifyService {
       messages,
     };
   }
-
-  findImageInFs(imageName: string) {
-    const image = path.resolve('./', './generated/images', `${imageName}`);
-
-    if (!fs.existsSync(image)) {
-      throw new BadRequestException('image does not exists');
-    }
-
-    return image;
+  async getTraductionMessages(user: User) {
+    const messages = await this.prismaService.message.findMany({
+      where: {
+        userId: user.id,
+        isTraduction: true,
+      },
+      orderBy: {
+        createdAt: 'asc',
+      },
+    });
+    return {
+      messages,
+    };
   }
 }

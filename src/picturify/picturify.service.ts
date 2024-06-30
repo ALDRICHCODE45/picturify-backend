@@ -144,6 +144,7 @@ export class PicturifyService {
 
       return {
         ok: true,
+        msg: 'procedimiento completado',
       };
     });
 

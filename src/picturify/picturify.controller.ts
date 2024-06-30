@@ -30,6 +30,7 @@ export class PicturifyController {
   async getAllMessagesByUsers(@GetUser() user: User) {
     return this.pictufifyService.getImagesMessages(user);
   }
+
   @Get('get-translate-messages')
   @UseGuards(AuthGuard())
   async getAllTraductionMessages(@GetUser() user: User) {
